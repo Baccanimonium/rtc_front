@@ -1,7 +1,9 @@
 import React, {Component, useCallback, useState} from 'react';
 import { StyleSheet, Text, View, Button, TextInput} from 'react-native';
-import { Input } from 'native-base';
+import { Input, Link } from 'native-base';
 import { Formik } from 'formik';
+import { Route, useLocation, BackButton } from "react-router-native";
+
 
 import PropTypes from 'prop-types';
 
@@ -14,7 +16,7 @@ const initialValues = {
     phone: ""
 }
 
-const SingIn = () => {
+const SingIn = ({ navigation, ...props }) => {
     const createNewUser = useCallback(async (formValue) => {
         try {
 
@@ -31,8 +33,16 @@ const SingIn = () => {
         }
         console.log(formValue)
     },[])
+    const goBack = () => {
+        console.log(props, navigation)
+        navigation.goBack();
+    }
         return (
             <View>
+                <Button
+                    title="Back"
+                    onPress={goBack}
+                />
                 <Formik
                     initialValues={initialValues}
                     onSubmit={createNewUser}

@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
+import MainStack from "./navigate";
 import React, {useMemo} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NativeBaseProvider, Box, Button } from 'native-base';
-import { NativeRouter, Route, Link } from "react-router-native";
+import { NativeRouter, BackButton, Route, Link } from "react-router-native";
 import SignUp from "./pages/signUp";
 import SignIn from "./pages/signIn";
 import Auth from "./pages/Auth";
@@ -16,11 +17,14 @@ export default function App() {
   const Branch = useMemo(() => authorizated ? Auth : UnAuth,[authorizated])
   return (
     <NativeRouter>
-      <NativeBaseProvider>
-        <View style={styles.container}>
-          <Branch />
-        </View>
-      </NativeBaseProvider>
+      <BackButton>
+        <NativeBaseProvider>
+          <View style={styles.container}>
+            {/*<Branch />*/}
+            <MainStack />
+          </View>
+        </NativeBaseProvider>
+      </BackButton>
     </NativeRouter>
   );
 }
