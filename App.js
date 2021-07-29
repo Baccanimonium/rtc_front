@@ -10,7 +10,7 @@ import UnAuth from "./pages/UnAuth";
 export const Example = () => {
   return <Button onPress={() => console.log("hello world")}>PRIMARY</Button>
 }
-const authorizated = false
+const authorizated = true
 
 export default function App() {
   const Branch = useMemo(() => authorizated ? Auth : UnAuth,[authorizated])

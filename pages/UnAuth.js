@@ -11,8 +11,8 @@ const UnAuth = props => {
     const { pathname } = useLocation()
     return (
         <View style={styles.container}>
-            {pathname !== "/sign-in" &&  <Link style={styles.signInButton} to="/sign-in">
-                <Text>Sign in</Text>
+            {pathname !== "/sign-up" &&  <Link style={styles.signInButton} to="/sign-up">
+                <Text>Sign up</Text>
             </Link>}
             <Route path="/sign-in" component={SignIn} />
             <Route path="/sign-up" component={SignUp} />

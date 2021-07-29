@@ -1,9 +1,12 @@
 import React, {Component, useCallback, useState} from 'react';
 import { StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import { withRouter } from "react-router-native";
 import { Input } from 'native-base';
 import { Formik } from 'formik';
 
 import PropTypes from 'prop-types';
+import {BACKEND_URL} from "../../constants";
+import {URL_SIGN_UP} from "../../apiList";
 
 const initialValues = {
     name: "",
@@ -14,11 +17,11 @@ const initialValues = {
     phone: ""
 }
 
-const SingIn = () => {
+const SingIn = ({ history }) => {
     const createNewUser = useCallback(async (formValue) => {
         try {
 
-           await fetch('http://192.168.1.5:8000/auth/sign-up', {
+         await fetch(`${BACKEND_URL}/${URL_SIGN_UP}`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -26,10 +29,11 @@ const SingIn = () => {
                 },
                 body: JSON.stringify(formValue)
             });
+            history.push("/sign-up")
         } catch (e){
             console.log(e)
         }
-        console.log(formValue)
+
     },[])
         return (
             <View>
@@ -39,21 +43,6 @@ const SingIn = () => {
                 >
                     {({ handleChange, handleBlur, handleSubmit, values }) => (
                         <View>
-                            <Input
-                                style={styles.input}
-                                w="100%"
-                                mx={3}
-                                placeholder="Name"
-                                onChangeText={handleChange('name')}
-                                onBlur={handleBlur('name')}
-                                value={values.name}
-                                _light={{
-                                    placeholderTextColor: "blueGray.400",
-                                }}
-                                _dark={{
-                                    placeholderTextColor: "blueGray.50",
-                                }}
-                            />
                             <Input
                                 w="100%"
                                 mx={3}
@@ -85,51 +74,6 @@ const SingIn = () => {
                                     placeholderTextColor: "blueGray.50",
                                 }}
                             />
-                            <Input
-                                w="100%"
-                                mx={3}
-                                placeholder="About"
-                                style={styles.input}
-                                onChangeText={handleChange('about')}
-                                onBlur={handleBlur('about')}
-                                value={values.about}
-                                _light={{
-                                    placeholderTextColor: "blueGray.400",
-                                }}
-                                _dark={{
-                                    placeholderTextColor: "blueGray.50",
-                                }}
-                            />
-                            <Input
-                                w="100%"
-                                mx={3}
-                                placeholder="Address"
-                                style={styles.input}
-                                onChangeText={handleChange('address')}
-                                onBlur={handleBlur('address')}
-                                value={values.address}
-                                _light={{
-                                    placeholderTextColor: "blueGray.400",
-                                }}
-                                _dark={{
-                                    placeholderTextColor: "blueGray.50",
-                                }}
-                            />
-                            <Input
-                                w="100%"
-                                mx={3}
-                                placeholder="Phone"
-                                style={styles.input}
-                                onChangeText={handleChange('phone')}
-                                onBlur={handleBlur('phone')}
-                                value={values.phone}
-                                _light={{
-                                    placeholderTextColor: "blueGray.400",
-                                }}
-                                _dark={{
-                                    placeholderTextColor: "blueGray.50",
-                                }}
-                            />
                             <View style={styles.input}>
                                 <Button onPress={handleSubmit} title="Submit"  />
                             </View>
@@ -151,4 +95,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default SingIn;
+export default withRouter(SingIn);
