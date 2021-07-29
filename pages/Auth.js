@@ -7,9 +7,14 @@ import Footer from "../components/Footer";
 
 const Auth = props => {
     return (
-        <View>
+        <View style={{ height: "100%" }}>
             <Route path="/sign-up" component={SignUp} />
-            <Footer />
+            <Footer>
+                <Text>D</Text>
+                <Text>S</Text>
+                <Text>C</Text>
+                <Text>P</Text>
+            </Footer>
         </View>
     );
 };
