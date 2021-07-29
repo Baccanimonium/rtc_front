@@ -16,11 +16,10 @@ const initialValues = {
     phone: ""
 }
 
-const SingIn = ({ navigation, ...props }) => {
+const SingIn = ({ history, ...props }) => {
     const createNewUser = useCallback(async (formValue) => {
         try {
-
-           await fetch('http://192.168.1.5:8000/auth/sign-up', {
+           await fetch('http://192.168.0.4:8000/auth/sign-up', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -28,20 +27,17 @@ const SingIn = ({ navigation, ...props }) => {
                 },
                 body: JSON.stringify(formValue)
             });
+           console.log(JSON.stringify(formValue))
         } catch (e){
             console.log(e)
         }
         console.log(formValue)
     },[])
-    const goBack = () => {
-        console.log(props, navigation)
-        navigation.goBack();
-    }
         return (
             <View>
                 <Button
                     title="Back"
-                    onPress={goBack}
+                    onPress={() => {history.goBack()}}
                 />
                 <Formik
                     initialValues={initialValues}

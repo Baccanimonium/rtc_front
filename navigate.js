@@ -1,5 +1,4 @@
 import React from "react";
-import App from "./App"
 import Auth from "./pages/Auth";
 import UnAuth from "./pages/UnAuth";
 import SignIn from "./pages/signIn";
