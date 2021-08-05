@@ -2,7 +2,7 @@ import React from "react";
 import Auth from "./pages/Auth";
 import UnAuth from "./pages/UnAuth";
 import SignIn from "./pages/signIn";
-import SignUp from "./pages/signUp";
+import mainBranch from "./pages/mainBranch";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native"
@@ -12,6 +12,11 @@ const Stack = createStackNavigator()
 export default function Navigate () {
     return <NavigationContainer>
         <Stack.Navigator>
+            <Stack.Screen
+                name="mainBranch"
+                component={mainBranch}
+                options={{title: "mainBranch"}}
+            />
             <Stack.Screen
                 name="UnAuth"
                 component={UnAuth}

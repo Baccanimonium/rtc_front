@@ -6,6 +6,7 @@ import { Route, useLocation, BackButton } from "react-router-native";
 
 
 import PropTypes from 'prop-types';
+import {flex} from "styled-system";
 
 const initialValues = {
     name: "",
@@ -35,10 +36,6 @@ const SingIn = ({ history, ...props }) => {
     },[])
         return (
             <View>
-                <Button
-                    title="Back"
-                    onPress={() => {history.goBack()}}
-                />
                 <Formik
                     initialValues={initialValues}
                     onSubmit={createNewUser}
@@ -136,8 +133,18 @@ const SingIn = ({ history, ...props }) => {
                                     placeholderTextColor: "blueGray.50",
                                 }}
                             />
-                            <View style={styles.input}>
-                                <Button onPress={handleSubmit} title="Submit"  />
+                            <View style={styles.buttonArea}>
+                                <Button
+                                    // style={styles.button}
+                                    style={styles.defaultButton}
+                                    onPress={handleSubmit}
+                                    title="Submit"
+                                />
+                                <Button
+                                    style={styles.button}
+                                    title="Back"
+                                    onPress={() => {history.goBack()}}
+                                />
                             </View>
                         </View>
                     )}
@@ -151,9 +158,21 @@ const SingIn = ({ history, ...props }) => {
 SingIn.propTypes = {};
 
 const styles = StyleSheet.create({
+    button: {
+        minWidth: 90,
+        backgroundColor: "black",
+        height: 200
+    },
     input: {
         marginTop: 10,
     },
+    buttonArea: {
+        marginTop: 20,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center"
+    }
 });
 
 
