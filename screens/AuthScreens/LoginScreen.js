@@ -8,20 +8,28 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import api from "../../api";
 import {URL_LOGIN} from "../../constants/ApiUrl";
 import {tokenAtom} from "../../store/user";
+import {ErrorInput} from "../../components/ErrorInput"
 
-const fields = [
+const LOGIN_LENGTH = 6
+const PASSWORD_LENGTH = 6
+
+const fields = (touched) => [
     {
         id: "login",
-        component: Input,
+        component: (props) => ErrorInput(touched, props),
         autoFocus: true,
-        placeholder: "Логин"
+        validLength: LOGIN_LENGTH,
+        placeholder: "Логин",
+        messageError: "Обязательно для заполнения"
     },
     {
         id: "password",
-        component: Input,
+        component: (props) => ErrorInput(touched, props),
         secureTextEntry: true,
+        validLength: PASSWORD_LENGTH,
         placeholder: "Пароль",
-        type: "password"
+        type: "password",
+        messageError: "Обязательно для заполнения"
     },
 ]
 
@@ -30,6 +38,7 @@ export default ({ navigation }) => {
 
     const fetch = useRecoilValue(api)
     const [formState, setFormState] = useState({})
+    const [touched, setTouched] = useState(false)
     const formStateRef = useRef(formState)
     formStateRef.current = formState
 
@@ -40,7 +49,7 @@ export default ({ navigation }) => {
         [],
     );
 
-    const login = useCallback(async () => {
+    const userLogin = useCallback(async () => {
         try {
             const data = await fetch(URL_LOGIN, {
                 method: 'POST',
@@ -57,17 +66,25 @@ export default ({ navigation }) => {
         }
 
     }, [])
-    
+
+    const loginButton = () => {
+        const { login = "", password = "" } = formState
+        setTouched(true)
+        if (login.length >= LOGIN_LENGTH && password.length >= PASSWORD_LENGTH) {
+            return userLogin()
+        }
+    }
+
     return (
         <View style={tw`items-center justify-center p-10 bg-white`}>
             <Image source={require('../../Public/AA.png')} style={styles.logo} />
             <Form
                 style={styles.form}
-                fields={fields}
+                fields={fields(touched)}
                 value={formState}
                 onChange={setFormState}
             />
-            <Button containerStyle={styles.button} title="Логин" onPress={login} />
+            <Button containerStyle={styles.button} title="Логин" onPress={loginButton} />
             <Button containerStyle={styles.button} type="outline" title="Регистрация" onPress={goToRegister} />
         </View>
     )
@@ -85,6 +102,11 @@ const styles = StyleSheet.create({
     button: {
         width: 200,
         marginTop: 10
+    },
+    errorText: {
+        color: "red",
+        marginTop: -20,
+        marginLeft: 10
     }
 })
 
