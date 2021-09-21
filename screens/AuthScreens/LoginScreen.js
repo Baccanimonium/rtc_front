@@ -44,10 +44,6 @@ export default ({ navigation }) => {
         try {
             const data = await fetch(URL_LOGIN, {
                 method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify(formStateRef.current)
             })
             const { token } = await data.json()

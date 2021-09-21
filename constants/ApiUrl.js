@@ -1,2 +1,5 @@
 export const URL_LOGIN = "auth/sign-in"
 export const URL_REGISTER = "auth/sign-up"
+export const URL_CHAT_CHANNELS = "api/channels"
+export const URL_USER_PROFILE = "api/users/profile"
+export const URL_FILE_UPLOAD = "api/upload"

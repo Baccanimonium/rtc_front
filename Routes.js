@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import HomeScreen from "./screens/HomeScreen";
 import DoctorScreen from "./screens/DoctorScreen";
 import EventScreen from "./screens/EventScreen";
@@ -24,9 +24,14 @@ import * as SecureStore from 'expo-secure-store';
 import {useRecoilState} from "recoil";
 import {tokenAtom} from "./store/user";
 import {Text} from "react-native";
+import {SocketContext} from "./constants/context";
 
 
 const PublicRoutes = [
+    // {
+    //     name: SCREEN_CHAT,
+    //     component: ChatScreen,
+    // },
     {
         name: SCREEN_LOGIN,
         component: LoginScreen,
@@ -82,10 +87,13 @@ const globalScreenOptions = {
     headerTitleStyle: {color: "white"},
     headerTintColor: "white"
 }
-
+const TT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzIyNjQ4MjQsImlhdCI6MTYzMjIyMTYyNCwiaWRfdXNlciI6M30.iHcok3CN-DwFtdytE_Lp66QUkQkkF8cnhGIhAiJMy0M"
 export default () => {
     const [loading, setLoadingFlag] = useState(true)
+    const [socketInstance, setSocketInstance] = useState(null)
     const [token, setToken] = useRecoilState(tokenAtom)
+    const socketRef = useRef(null)
+    socketRef.current = socketInstance
 
     // Эффект только для первого рендера, получить токен из стораджа
     useEffect(() => {
@@ -100,24 +108,61 @@ export default () => {
         })()
     }, [])
 
+    useEffect(() => {
+        if (socketRef.current) {
+            socketRef.current.close()
+            setSocketInstance(null)
+        }
+        // if (token) {
+        socketRef.current = new WebSocket(`ws://192.168.50.249:8000/websocket?authorization=${TT}`);
+        socketRef.current.onopen = (args) => {
+            console.log("open", args)
+            // connection opened  socketRef.current.send('something'); // send a message};
+        }
+        socketRef.current.onmessage = (e) => {
+            console.log(e)
+            // a message was received  console.log(e.data);};
+        }
+        socketRef.current.onerror = (e) => {
+            // an error occurred  console.log(e.message);};
+        }
+        socketRef.current.onclose = (e) => {
+            console.log("close")
+            // connection closed  console.log(e.code, e.reason);};
+        }
+        setSocketInstance(socketRef.current)
+        // }
+    }, [token])
+
+    useEffect(() => {
+
+        (() => {
+           setTimeout(() => setToken(TT), 500)
+        })()
+    }, [])
+
     return (
         <SafeAreaView style={tw`bg-white h-full`}>
-            {!loading
-                ? (
-                    <Stack.Navigator screenOptions={globalScreenOptions}>
-                        {(token ? Routes : PublicRoutes).map(({name, component, options}) => (
-                            <Stack.Screen
-                                key={name}
-                                name={name}
-                                component={component}
-                                options={options}
-                            />
-                        ))}
-                    </Stack.Navigator>
-                )
-                : <Text>loading</Text>
-            }
-            {token && <Navigation/>}
+            <SocketContext.Provider value={socketInstance}>
+                <React.Suspense fallback={<Text>loading</Text>}>
+                    {!loading
+                        ? (
+                            <Stack.Navigator screenOptions={globalScreenOptions}>
+                                {(token ? Routes : PublicRoutes).map(({name, component, options}) => (
+                                    <Stack.Screen
+                                        key={name}
+                                        name={name}
+                                        component={component}
+                                        options={options}
+                                    />
+                                ))}
+                            </Stack.Navigator>
+                        )
+                        : <Text>loading</Text>
+                    }
+                </React.Suspense>
+                {token && <Navigation/>}
+            </SocketContext.Provider>
         </SafeAreaView>
     )
 }
