@@ -3,6 +3,7 @@ export const URL_REGISTER = "auth/sign-up"
 export const URL_DOCTORS = "api/doctors"
 export const URL_PATIENT = "api/patient"
 export const URL_SCHEDULE = "api/schedule"
+export const URL_USERS = "api/users"
 
 //
 // POST   /api/doctors/

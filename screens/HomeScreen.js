@@ -9,7 +9,8 @@ import {
     SCREEN_EVENT, SCREEN_MY_PROFILE,
     SCREEN_PATIENTS_LIST,
     SCREEN_STATISTIC,
-    SCREEN_TASK_LIST
+    SCREEN_TASK_LIST,
+    SCREEN_USERS
 } from "../constants/ScreensNames";
 
 const WorkBench = [
@@ -17,6 +18,11 @@ const WorkBench = [
         title: 'Patient list',
         icon: "dingding",
         route: SCREEN_PATIENTS_LIST
+    },
+    {
+        title: 'User list',
+        icon: "users",
+        route: SCREEN_USERS
     },
     {
         title: "Tasks",

@@ -1,29 +1,32 @@
 import { Text, View, Button } from "react-native";
 import tw from "tailwind-react-native-classnames";
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { patientList } from "../mock/patient";
 import { Badge } from "react-native-elements";
-import {URL_PATIENT} from "../constants/ApiUrl";
+import {URL_PATIENT, URL_USERS} from "../constants/ApiUrl";
+import {useRecoilValue} from "recoil";
+import api from "../api";
 
 export default () => {
-    const getPatientList = useCallback(async () => {
-        try {
-            const data = await fetch(URL_PATIENT, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            })
-            console.log(data, 4545)
-        } catch (e) {
-            console.log(e)
-        }
+    const [patients, setPatients] = useState([])
+    const fetch = useRecoilValue(api)
 
-    }, [])
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await fetch(URL_PATIENT, {
+                    method: 'GET'
+                })
+                setPatients(await data.json())
+            } catch (e) {
+                console.log(e)
+            }
+
+        })()
+    },[])
+    console.log(patients)
     return (
         <View style={tw`bg-white h-full px-4 pt-6 `}>
-            <Button onPress={getPatientList} title="sss"/>
             {patientList.map(({id, description, recovered, name}) => (
                 <View
                     key={id}

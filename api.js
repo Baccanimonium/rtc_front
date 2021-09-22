@@ -18,7 +18,7 @@ const api = selector({
     key: "api",
     get: ({ get }) => {
         const token = get(tokenAtom)
-        return createApi(token || "")
+        return createApi(`Bearer ${token}` || "")
     }
 })
 

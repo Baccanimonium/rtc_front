@@ -10,6 +10,7 @@ import {
     SCREEN_EVENT,
     SCREEN_PATIENTS_LIST,
     SCREEN_TASK_LIST, SCREEN_STATISTIC, SCREEN_CHAT, SCREEN_MY_PROFILE, SCREEN_LOGIN, SCREEN_REGISTER,
+    SCREEN_USERS
 } from "./constants/ScreensNames";
 import ChatScreen from "./screens/ChatScreen";
 import StatisticScreen from "./screens/StatisticScreen";
@@ -24,6 +25,7 @@ import * as SecureStore from 'expo-secure-store';
 import {useRecoilState} from "recoil";
 import {tokenAtom} from "./store/user";
 import {Text} from "react-native";
+import UserListScreen from "./screens/UserListScreen";
 
 
 const PublicRoutes = [
@@ -72,6 +74,10 @@ const Routes = [
     {
         name: SCREEN_MY_PROFILE,
         component: MyProfileScreen,
+    },
+    {
+        name: SCREEN_USERS,
+        component: UserListScreen,
     },
 ]
 
