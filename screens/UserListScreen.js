@@ -46,12 +46,17 @@ export default () => {
    setIdUser(id)
  }, [])
 
+  const closeModal = useCallback(() => {
+    setModalVisible(false)
+  }, [])
 
   const add = useCallback(async () => {
     try {
 
       await new Promise(resolve => {
         setTimeout(resolve, 3000)
+        console.log(8888)
+        // setModalVisible(false)
       })
 
       // todo сделать после
@@ -65,10 +70,6 @@ export default () => {
       console.log(e)
     }
 
-  }, [])
-
-  const closeModal = useCallback(() => {
-    setModalVisible(false)
   }, [])
 
   return (
