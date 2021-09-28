@@ -16,7 +16,9 @@ import {
     SCREEN_LOGIN,
     SCREEN_REGISTER,
     SCREEN_DIALOG,
+    SCREEN_USERS,
 } from "./constants/ScreensNames";
+
 import ChatScreen from "./screens/ChatScreen/Screens/ChannelsScreen";
 import StatisticScreen from "./screens/StatisticScreen";
 import MyProfileScreen from "./screens/MyProfileScreen";
@@ -33,6 +35,7 @@ import {Text} from "react-native";
 import DialogScreen from "./screens/ChatScreen/Screens/DialogScreen";
 import {Socket} from "./Socket";
 import ChatSocketHandlers from './screens/ChatScreen/SocketHandler'
+import UserListScreen from "./screens/UserListScreen";
 
 
 const PublicRoutes = [
@@ -51,10 +54,6 @@ const PublicRoutes = [
 ]
 
 const Routes = [
-    {
-        name: SCREEN_CHAT,
-        component: ChatScreen,
-    },
     {
         name: SCREEN_HOME,
         component: HomeScreen,
@@ -78,10 +77,10 @@ const Routes = [
         name: SCREEN_TASK_LIST,
         component: TasksScreen,
     },
-    // {
-    //     name: SCREEN_CHAT,
-    //     component: ChatScreen,
-    // },
+    {
+        name: SCREEN_CHAT,
+        component: ChatScreen,
+    },
     {
         name: SCREEN_STATISTIC,
         component: StatisticScreen,
@@ -93,6 +92,10 @@ const Routes = [
     {
         name: SCREEN_DIALOG,
         component: DialogScreen,
+    },
+    {
+        name: SCREEN_USERS,
+        component: UserListScreen,
     },
 ]
 
