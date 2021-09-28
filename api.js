@@ -1,5 +1,5 @@
 import { atom, selector } from "recoil"
-import {tokenAtom} from "./store/user";
+import tokenState from "./store/token";
 
 export const createApi = (Authorization, setToken) => async (url, { headers, ...payload }) => {
     let response
@@ -18,7 +18,7 @@ export const createApi = (Authorization, setToken) => async (url, { headers, ...
         )
         return response
     } catch (e) {
-        if (response.status === 401) {
+        if (!response || response.status === 401) {
             setToken({})
         }
 
@@ -31,7 +31,7 @@ export const createApi = (Authorization, setToken) => async (url, { headers, ...
 const api = selector({
     key: "api",
     get: ({ get }) => {
-        const {token, setToken} = get(tokenAtom)
+        const {token, setToken} = get(tokenState)
         return createApi(`Bearer ${token}` || "", setToken)
     }
 })

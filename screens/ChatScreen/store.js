@@ -1,5 +1,5 @@
 import {selector, atom, selectorFamily} from "recoil";
-import {tokenAtom} from "../../store/user";
+import tokenState from "../../store/token";
 import api from "../../api";
 import {URL_CHAT_CHANNELS} from "../../constants/ApiUrl";
 
@@ -7,7 +7,7 @@ const currentUserChannels = selector({
     key: 'currentUserChannels',
     get: async ({get}) => {
         try {
-            const token = get(tokenAtom);
+            const token = get(tokenState);
             const fetch = get(api);
             if (token) {
                 const response = await fetch(URL_CHAT_CHANNELS, {method: 'GET'});

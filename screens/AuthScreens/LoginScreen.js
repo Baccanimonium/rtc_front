@@ -7,7 +7,7 @@ import {SCREEN_REGISTER} from "../../constants/ScreensNames";
 import {useRecoilState, useRecoilValue} from "recoil";
 import api from "../../api";
 import {URL_LOGIN} from "../../constants/ApiUrl";
-import {tokenAtom} from "../../store/user";
+import tokenState from "../../store/token";
 import * as SecureStore from "expo-secure-store";
 
 const fields = [
@@ -27,7 +27,7 @@ const fields = [
 ]
 
 export default ({ navigation }) => {
-    const { 1: setToken } = useRecoilState(tokenAtom)
+    const { 1: setToken } = useRecoilState(tokenState)
 
     const fetch = useRecoilValue(api)
     const [formState, setFormState] = useState({})

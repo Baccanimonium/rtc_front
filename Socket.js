@@ -2,13 +2,13 @@ import 'react-native-get-random-values';
 import {v4 as uuidv4} from "uuid";
 import React, {useEffect, useState, useRef} from "react";
 import {useRecoilValue} from "recoil";
-import {tokenAtom} from "./store/user";
+import tokenState from "./store/token";
 import { SocketContext } from "./constants/context";
 
 const messagesPull = {}
 
 export const Socket = ({ children, messageHandlers }) => {
-    const {token} = useRecoilValue(tokenAtom)
+    const {token} = useRecoilValue(tokenState)
 
     const [socketInstance, setSocketInstance] = useState(null)
     const socketRef = useRef(null)

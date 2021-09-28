@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo, useRef} from "react";
-import {useRecoilValue} from "recoil";
+import {useRecoilState} from "recoil";
 import currentUserChannels, {messagesStore} from "./store";
 import useLoadChatParticipant from "./useLoadChatParticipant";
 import {
@@ -11,11 +11,11 @@ import {
 } from "./constants";
 
 export default (ChildComponent) => ({ messageHandlers, ...props }) => {
-    const [allMessages, setMessagesState] = useRecoilValue(messagesStore)
+    const [allMessages, setMessagesState] = useRecoilState(messagesStore)
     const refAllMessages = useRef(allMessages)
     refAllMessages.current = allMessages
 
-    const [allChannels, setChannelsState] = useRecoilValue(currentUserChannels)
+    const [allChannels, setChannelsState] = useRecoilState(currentUserChannels)
     const refAllChannels = useRef(allChannels)
     refAllChannels.current = allChannels
 

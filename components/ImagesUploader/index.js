@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import { Image, View, Platform, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker'
-import {serverUrl, URL_FILE_FTP} from "../../constants/ApiUrl";
+import useGetImageUrl from "../../hooks/useGetImageUrl";
 
 export default function UploadImage({ value, onChangeText, style }) {
+    const normalizedLink = useGetImageUrl(value)
 
     const image = useMemo(() => !value || value.search("/") >= 0
         ? value
-        : `${serverUrl}/${URL_FILE_FTP}/${value}`, [value]);
+        : normalizedLink, [value]);
 
     const addImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();

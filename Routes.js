@@ -16,7 +16,7 @@ import {
     SCREEN_LOGIN,
     SCREEN_REGISTER,
     SCREEN_DIALOG,
-    SCREEN_USERS,
+    SCREEN_USERS, SCREEN_PATIENT,
 } from "./constants/ScreensNames";
 
 import ChatScreen from "./screens/ChatScreen/Screens/ChannelsScreen";
@@ -30,12 +30,14 @@ import {SafeAreaView} from "react-native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import * as SecureStore from 'expo-secure-store';
 import {useRecoilState, useRecoilValue} from "recoil";
-import CurrentUserState, {tokenAtom} from "./store/user";
+import CurrentUserState from "./store/user";
+import tokenState from "./store/token";
 import {Text} from "react-native";
 import DialogScreen from "./screens/ChatScreen/Screens/DialogScreen";
 import {Socket} from "./Socket";
 import ChatSocketHandlers from './screens/ChatScreen/SocketHandler'
 import UserListScreen from "./screens/UserListScreen";
+import PatientScreen from "./screens/PatientScreen";
 
 
 const PublicRoutes = [
@@ -97,6 +99,10 @@ const Routes = [
         name: SCREEN_USERS,
         component: UserListScreen,
     },
+    {
+        name: SCREEN_PATIENT,
+        component: PatientScreen,
+    },
 ]
 
 const Stack = createNativeStackNavigator()
@@ -111,7 +117,7 @@ const SocketController = ChatSocketHandlers(Socket)
 
 export default () => {
     const [loading, setLoadingFlag] = useState(true)
-    const [{token}, setToken] = useRecoilState(tokenAtom)
+    const [{token}, setToken] = useRecoilState(tokenState)
     const userData = useRecoilValue(CurrentUserState)
 
     // Эффект только для первого рендера, получить токен из стораджа
