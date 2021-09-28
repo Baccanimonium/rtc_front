@@ -1,126 +1,110 @@
-import React, {useState} from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, {useCallback, useEffect, useState } from "react";
+import {TouchableOpacity, Text, View} from "react-native";
 import tw from 'tailwind-react-native-classnames'
 import UploadImage from "../components/ImagesUploader";
 import {useRecoilState, useRecoilValue} from "recoil";
 import api from "../api";
-import {URL_FILE_UPLOAD} from "../constants/ApiUrl";
-import { Button, Input, Image } from "react-native-elements";
-import {tokenAtom} from "../store/user";
+import { URL_USER } from "../constants/ApiUrl";
+import { Input, Icon } from "react-native-elements";
+import Form from "../components/Form";
+import CurrentUserState from "../store/user";
+import usePreSaveFile from "../hooks/usePreSaveFile";
+
+const preSaveAvatar = usePreSaveFile("avatar")
+const fields = [
+    {
+        id: "avatar",
+        component: UploadImage,
+        style: tw`mx-auto mb-12`
+    },
+    {
+        id: "name",
+        component: Input,
+        placeholder: "Имя"
+    },
+    {
+        id: "surname",
+        component: Input,
+        placeholder: "Фамилия"
+    },
+    {
+        id: "password",
+        component: Input,
+        secureTextEntry: true,
+        placeholder: "Пароль",
+        type: "password"
+    },
+    {
+        id: "address",
+        component: Input,
+        placeholder: "Адресс",
+    },
+    {
+        id: "phone",
+        component: Input,
+        placeholder: "Телефон",
+        type: "phone"
+    },
+    {
+        id: "about",
+        component: Input,
+        secureTextEntry: true,
+        placeholder: "О себе",
+        multiline: true,
+        numberOfLines: 4,
+    },
+]
+
+export default ({navigation}) => {
+    const [value, setValue] = useState({});
+    const fetch = useRecoilValue(api)
+    const [userData, setUserData] = useRecoilState(CurrentUserState)
 
 
-const createFormData = (photo, body = {}) => {
+    const saveUserObj = useCallback(async (newUserData) => {
+        const data = await fetch(`${URL_USER}/${newUserData.id}`, {
+            method: "PUT",
+            body: JSON.stringify(newUserData)
+        })
+        const savedJson = await data.json()
 
+        setUserData(savedJson)
+    }, [])
 
-    data.append('file', {
-        name: photo.fileName,
-        type: photo.type,
-        uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-    });
+    const withFileSaver = preSaveAvatar(saveUserObj)
 
-    Object.keys(body).forEach((key) => {
-        data.append(key, body[key]);
-    });
+    const documentUpdater = useCallback(() => {
+        withFileSaver(value)
+    }, [value, withFileSaver])
 
-    return data;
-};
+    // copy userData for edit
+    useEffect(() => {
+        setValue(userData)
+    }, [userData])
 
-export default () => {
-    const [image, setImage] = useState(null);
-    const token = useRecoilValue(tokenAtom)
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: ({children}) => {
+                return (
+                    <View style={tw`flex-row items-center justify-between w-11/12 `}>
+                        <Text style={tw`text-white text-xl`}>{children}</Text>
+                        <TouchableOpacity onPress={documentUpdater}>
+                            <Icon
+                                name="check"
+                                type="antdesign"
+                                size={28}
+                                color="white"
+                                style={tw`mr-6`}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+        })
+    }, []);
 
-    const handleUploadPhoto = async () => {
-        try {
-
-            let uriParts = image.uri.split('.');
-            let fileType = uriParts[uriParts.length - 1];
-
-            let formData = new FormData();
-            formData.append('file', {
-                uri: image.uri,
-                name: `photo.${fileType}`,
-                type: `image/${fileType}`,
-            });
-
-
-            fetch(`http://192.168.50.249:8000/api/upload`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-                .then((response) => response.json())
-                .then((response) => {
-                    console.log('response', response);
-                })
-                .catch((error) => {
-                    console.log('error', error);
-                });
-            // const body = new FormData();
-
-            // console.log({
-            //     uri: image.uri,
-            //     type: image.type,
-            //     name: (() => {
-            //         const path = image.uri.split("/")
-            //         return path[path.length - 1]
-            //     })()
-            // })
-            // console.log(image)
-            // body.append('file', {
-            //     uri: image.uri,
-            //     type: image.type,
-            //     name: (() => {
-            //         const path = image.uri.split("/")
-            //         return path[path.length - 1]
-            //     })()
-            // })
-            // const xhr = new XMLHttpRequest()
-            // xhr.addEventListener("load", () => {
-            //     console.log(xhr.response)
-            // })
-            // xhr.addEventListener("error", () => {
-            //     console.log(xhr.response)
-            // })
-            // xhr.open("POST",`http://192.168.50.249:8000/${URL_FILE_UPLOAD}`)
-            // xhr.onerror = function (e) {
-            //     console.log("1** An error occurred during the transaction", xhr);
-            // };
-            // xhr.setRequestHeader("Authorization", `Bearer ${token}`)
-            // xhr.setRequestHeader("Content-Type", 'multipart/form-data')
-            // xhr.send(body)
-            // fetch(URL_FILE_UPLOAD, {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            //     body,
-            // })
-            //     .then((response) => response.json())
-            //     .then((response) => {
-            //         console.log('response', response);
-            //     })
-            //     .catch((error) => {
-            //         console.log('error', error.line);
-            //     });
-        } catch (e){
-            console.log('failed upload image operation: ', e.response)
-        }
-    };
     return (
-        <View style={tw`bg-white h-full`}>
-            <Text>MyProfile screen, реализация после основных API</Text>
-            <UploadImage image={image} setImage={setImage} />
-
-            <Button title="upload" onPress={handleUploadPhoto}/>
-        </View>
+        <Form style={tw`mt-6`} fields={fields} value={value}/>
     )
 }
-
-const styles = StyleSheet.create({
-
-})
 

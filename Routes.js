@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useState} from "react";
 import HomeScreen from "./screens/HomeScreen";
 import DoctorScreen from "./screens/DoctorScreen";
 import EventScreen from "./screens/EventScreen";
@@ -9,9 +9,15 @@ import {
     SCREEN_DOCTORS,
     SCREEN_EVENT,
     SCREEN_PATIENTS_LIST,
-    SCREEN_TASK_LIST, SCREEN_STATISTIC, SCREEN_CHAT, SCREEN_MY_PROFILE, SCREEN_LOGIN, SCREEN_REGISTER,
+    SCREEN_TASK_LIST,
+    SCREEN_STATISTIC,
+    SCREEN_CHAT,
+    SCREEN_MY_PROFILE,
+    SCREEN_LOGIN,
+    SCREEN_REGISTER,
+    SCREEN_DIALOG,
 } from "./constants/ScreensNames";
-import ChatScreen from "./screens/ChatScreen";
+import ChatScreen from "./screens/ChatScreen/Screens/ChannelsScreen";
 import StatisticScreen from "./screens/StatisticScreen";
 import MyProfileScreen from "./screens/MyProfileScreen";
 import LoginScreen from "./screens/AuthScreens/LoginScreen";
@@ -21,10 +27,12 @@ import Navigation from "./Navigation";
 import {SafeAreaView} from "react-native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import * as SecureStore from 'expo-secure-store';
-import {useRecoilState} from "recoil";
-import {tokenAtom} from "./store/user";
+import {useRecoilState, useRecoilValue} from "recoil";
+import CurrentUserState, {tokenAtom} from "./store/user";
 import {Text} from "react-native";
-import {SocketContext} from "./constants/context";
+import DialogScreen from "./screens/ChatScreen/Screens/DialogScreen";
+import {Socket} from "./Socket";
+import ChatSocketHandlers from './screens/ChatScreen/SocketHandler'
 
 
 const PublicRoutes = [
@@ -43,6 +51,10 @@ const PublicRoutes = [
 ]
 
 const Routes = [
+    {
+        name: SCREEN_CHAT,
+        component: ChatScreen,
+    },
     {
         name: SCREEN_HOME,
         component: HomeScreen,
@@ -66,10 +78,10 @@ const Routes = [
         name: SCREEN_TASK_LIST,
         component: TasksScreen,
     },
-    {
-        name: SCREEN_CHAT,
-        component: ChatScreen,
-    },
+    // {
+    //     name: SCREEN_CHAT,
+    //     component: ChatScreen,
+    // },
     {
         name: SCREEN_STATISTIC,
         component: StatisticScreen,
@@ -77,6 +89,10 @@ const Routes = [
     {
         name: SCREEN_MY_PROFILE,
         component: MyProfileScreen,
+    },
+    {
+        name: SCREEN_DIALOG,
+        component: DialogScreen,
     },
 ]
 
@@ -87,13 +103,13 @@ const globalScreenOptions = {
     headerTitleStyle: {color: "white"},
     headerTintColor: "white"
 }
-const TT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzIyNjQ4MjQsImlhdCI6MTYzMjIyMTYyNCwiaWRfdXNlciI6M30.iHcok3CN-DwFtdytE_Lp66QUkQkkF8cnhGIhAiJMy0M"
+
+const SocketController = ChatSocketHandlers(Socket)
+
 export default () => {
     const [loading, setLoadingFlag] = useState(true)
-    const [socketInstance, setSocketInstance] = useState(null)
-    const [token, setToken] = useRecoilState(tokenAtom)
-    const socketRef = useRef(null)
-    socketRef.current = socketInstance
+    const [{token}, setToken] = useRecoilState(tokenAtom)
+    const userData = useRecoilValue(CurrentUserState)
 
     // Эффект только для первого рендера, получить токен из стораджа
     useEffect(() => {
@@ -101,54 +117,23 @@ export default () => {
             if (!token && loading) {
                 const token = await SecureStore.getItemAsync("token")
                 if (token) {
-                    setToken(token)
+                    setToken({token, setToken})
                 }
             }
             setLoadingFlag(false)
         })()
     }, [])
 
-    useEffect(() => {
-        if (socketRef.current) {
-            socketRef.current.close()
-            setSocketInstance(null)
-        }
-        // if (token) {
-        socketRef.current = new WebSocket(`ws://192.168.50.249:8000/websocket?authorization=${TT}`);
-        socketRef.current.onopen = (args) => {
-            console.log("open", args)
-            // connection opened  socketRef.current.send('something'); // send a message};
-        }
-        socketRef.current.onmessage = (e) => {
-            console.log(e)
-            // a message was received  console.log(e.data);};
-        }
-        socketRef.current.onerror = (e) => {
-            // an error occurred  console.log(e.message);};
-        }
-        socketRef.current.onclose = (e) => {
-            console.log("close")
-            // connection closed  console.log(e.code, e.reason);};
-        }
-        setSocketInstance(socketRef.current)
-        // }
-    }, [token])
 
-    useEffect(() => {
-
-        (() => {
-           setTimeout(() => setToken(TT), 500)
-        })()
-    }, [])
 
     return (
         <SafeAreaView style={tw`bg-white h-full`}>
-            <SocketContext.Provider value={socketInstance}>
+            <SocketController>
                 <React.Suspense fallback={<Text>loading</Text>}>
                     {!loading
                         ? (
                             <Stack.Navigator screenOptions={globalScreenOptions}>
-                                {(token ? Routes : PublicRoutes).map(({name, component, options}) => (
+                                {(userData.id ? Routes : PublicRoutes).map(({name, component, options}) => (
                                     <Stack.Screen
                                         key={name}
                                         name={name}
@@ -161,8 +146,8 @@ export default () => {
                         : <Text>loading</Text>
                     }
                 </React.Suspense>
-                {token && <Navigation/>}
-            </SocketContext.Provider>
+                {userData.id && <Navigation/>}
+            </SocketController>
         </SafeAreaView>
     )
 }

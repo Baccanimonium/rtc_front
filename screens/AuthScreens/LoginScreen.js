@@ -8,6 +8,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import api from "../../api";
 import {URL_LOGIN} from "../../constants/ApiUrl";
 import {tokenAtom} from "../../store/user";
+import * as SecureStore from "expo-secure-store";
 
 const fields = [
     {
@@ -47,7 +48,8 @@ export default ({ navigation }) => {
                 body: JSON.stringify(formStateRef.current)
             })
             const { token } = await data.json()
-            setToken(token)
+            await SecureStore.setItemAsync("token", token)
+            setToken({ token, setToken })
         } catch (e) {
             console.log(e)
         }

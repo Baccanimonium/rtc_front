@@ -1,16 +1,20 @@
-import React from "react";
-import {View, Text} from "react-native";
+import React, {useContext, useEffect, useState} from "react";
+import {UserProfileLoader} from "../../constants/context";
 
-const PersonProfile = () => {
+const PersonProfile = ({ id, children }) => {
+    const [personProfile, setPersonProfile] = useState({})
+    const [loading, setLoadingStatus] = useState(false)
+    const getUserProfile = useContext(UserProfileLoader)
 
-    return (
-        <React.Suspense fallback={<Text>loading</Text>}>
-            <View>
-
-            </View>
-        </React.Suspense>
-
-    )
+    useEffect(() => {
+        (async () => {
+            setLoadingStatus(true)
+            const profile = await getUserProfile(id)
+            setPersonProfile(profile)
+            setLoadingStatus(false)
+        })()
+    }, [id])
+    return children({ loading, personProfile })
 }
 
 export default PersonProfile

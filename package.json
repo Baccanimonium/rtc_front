@@ -10,6 +10,7 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
+    "dayjs": "^1.10.7",
     "expo": "~42.0.1",
     "expo-image-picker": "^10.2.3",
     "expo-secure-store": "~10.2.0",
@@ -19,6 +20,8 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-device-info": "^8.3.1",
     "react-native-elements": "^3.4.2",
+    "react-native-get-random-values": "^1.7.0",
+    "react-native-gifted-chat": "^0.16.3",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-vector-icons": "^8.1.0",
