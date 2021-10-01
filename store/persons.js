@@ -15,7 +15,7 @@ export const stringifyData = (v) => JSON.stringify((() => {
 })())
 
 export const cachedLocalStorageValue = selectorFamily({
-    key: "cachedLocalStorageValue",
+    key: "userFamilySelector",
     get: (localStorageKey) => ({ get }) => {
         let val = get(localStorageCache)[localStorageKey]
         if (!val) {
@@ -29,7 +29,6 @@ export const cachedLocalStorageValue = selectorFamily({
         return val
     },
     set: (localStorageKey) => ({ set, get }, newValue) => {
-        localStorage.setItem(localStorageKey, stringifyData(newValue))
         set(localStorageCache, { ...get(localStorageCache), [localStorageKey]: newValue })
     }
 })

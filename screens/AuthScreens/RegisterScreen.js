@@ -34,7 +34,6 @@ const fields = [
         placeholder: "О себе",
         multiline: true,
         numberOfLines: 4,
-        type: "password"
     },
     {
         id: "address",

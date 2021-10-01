@@ -57,6 +57,10 @@ const PublicRoutes = [
 
 const Routes = [
     {
+        name: SCREEN_PATIENT,
+        component: PatientScreen,
+    },
+    {
         name: SCREEN_HOME,
         component: HomeScreen,
         options: {
@@ -99,10 +103,10 @@ const Routes = [
         name: SCREEN_USERS,
         component: UserListScreen,
     },
-    {
-        name: SCREEN_PATIENT,
-        component: PatientScreen,
-    },
+    // {
+    //     name: SCREEN_PATIENT,
+    //     component: PatientScreen,
+    // },
 ]
 
 const Stack = createNativeStackNavigator()

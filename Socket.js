@@ -4,6 +4,8 @@ import React, {useEffect, useState, useRef} from "react";
 import {useRecoilValue} from "recoil";
 import tokenState from "./store/token";
 import { SocketContext } from "./constants/context";
+import { BACK_END_URL } from "./constants/backEndUrl";
+
 
 const messagesPull = {}
 
@@ -23,7 +25,7 @@ export const Socket = ({ children, messageHandlers }) => {
             setSocketInstance(null)
         }
         if (token) {
-            socketRef.current = new WebSocket(`ws://192.168.50.249:8000/websocket?authorization=${token}`);
+            socketRef.current = new WebSocket(`ws://${BACK_END_URL}/websocket?authorization=${token}`);
             socketRef.current.send = new Proxy(socketRef.current.send, {
                 apply(target, thisArg, [payload]) {
                     const messageId = uuidv4()

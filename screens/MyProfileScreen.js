@@ -62,7 +62,7 @@ export default ({navigation}) => {
 
 
     const saveUserObj = useCallback(async (newUserData) => {
-        const data = await fetch(`${URL_USER}/${newUserData.id}`, {
+        const data = await fetch(`${URL_USER}${newUserData.id}`, {
             method: "PUT",
             body: JSON.stringify(newUserData)
         })

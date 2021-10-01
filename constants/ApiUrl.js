@@ -9,8 +9,9 @@ export const URL_MESSAGES = "api/messages"
 export const URL_FILE_FTP = "file"
 export const URL_DOCTORS = "api/doctors"
 export const URL_PATIENT = "api/patient/"
-export const URL_SCHEDULE = "api/schedule"
+export const URL_SCHEDULE = "api/schedule/"
 export const URL_USERS = "api/users"
+export const URL_EVENT = (scheduleId) => `${URL_SCHEDULE}${scheduleId}/event/`
 
 //
 // POST   /api/doctors/
