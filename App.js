@@ -1,43 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import MainStack from "./navigate";
-import React, {useMemo} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { NativeBaseProvider, Box, Button } from 'native-base';
-import { NativeRouter, BackButton, Route, Link } from "react-router-native";
-import SignUp from "./pages/signUp";
-import SignIn from "./pages/signIn";
-import Auth from "./pages/Auth";
-import UnAuth from "./pages/UnAuth";
-export const Example = () => {
-  return <Button onPress={() => console.log("hello world")}>PRIMARY</Button>
-}
-const authorizated = false
+import "./plugins/dayjs"
+import React, {useEffect} from 'react';
+import {RecoilRoot} from 'recoil';
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import {NavigationContainer} from '@react-navigation/native'
+import Routes from "./Routes";
+
+import {StatusBar} from "expo-status-bar";
+import UserProfileLoaderContainer from "./core/UserUploaderContext";
+import ContextProviderRtcState from "./RTC/ContextProviderRtcState";
+import {Text} from "react-native";
+
+// TODO Сделать логин по HWID
+// import {getUniqueId} from 'react-native-device-info';
+
 
 export default function App() {
-  const Branch = useMemo(() => authorizated ? Auth : UnAuth,[authorizated])
-  return (
-    <NativeRouter>
-      <BackButton>
-        <NativeBaseProvider>
-          <View style={styles.container}>
-            {/*<Branch />*/}
-            <MainStack />
-          </View>
-        </NativeBaseProvider>
-      </BackButton>
-    </NativeRouter>
-  );
+
+    // useEffect(() => {
+    //     console.log(getUniqueId)
+    // }, [])
+
+    return (
+        <RecoilRoot>
+            <StatusBar style="light"/>
+            <NavigationContainer>
+                <ContextProviderRtcState>
+                    <SafeAreaProvider>
+                        <React.Suspense fallback={<Text>loading user state</Text>}>
+                            <UserProfileLoaderContainer>
+                                <Routes/>
+                            </UserProfileLoaderContainer>
+                        </React.Suspense>
+                    </SafeAreaProvider>
+                </ContextProviderRtcState>
+            </NavigationContainer>
+        </RecoilRoot>
+    );
 }
 
-const styles = StyleSheet.create({
-  nav: {
-    flexDirection: "row",
-    justifyContent: "space-around"
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    paddingTop: 25
-  },
-});
