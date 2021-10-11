@@ -1,12 +1,12 @@
 import React, {useCallback, useRef, useState} from "react";
-import {StyleSheet, Text, View, Button, Modal, Pressable, Alert} from "react-native";
+import {StyleSheet, Text, View, Modal, Pressable, Alert} from "react-native";
 import tw from 'tailwind-react-native-classnames'
 import {URL_PATIENT, URL_USERS} from "../constants/ApiUrl";
 import {useRecoilValue} from "recoil";
 import api from "../api";
 import {useEffect} from "react"
 import Form from "../components/Form";
-import {Input} from "react-native-elements";
+import {Input, Button} from "react-native-elements";
 import {useNavigation} from "@react-navigation/native";
 import {SCREEN_EVENT, SCREEN_PATIENT} from "../constants/ScreensNames";
 
@@ -47,6 +47,8 @@ export default () => {
     const [users, setUsers] = useState([])
     const [modalVisible, setModalVisible] = useState(false);
     const [newPatientState, setPatientState] = useState({})
+    const [loadingAdd, setLoadingAdd] = useState(false)
+    const [alertVisible, setAlertVisible] = useState(false)
     const navigation = useNavigation()
 
     const fetch = useRecoilValue(api)
@@ -84,6 +86,8 @@ export default () => {
             //   console.log(8888)
             //   // setModalVisible(false)
             // })
+            setLoadingAdd(true)
+            setTimeout(showAlert, 3000)
 
             // todo сделать прелоадеры
             const data = await fetch(URL_PATIENT, {
@@ -101,6 +105,20 @@ export default () => {
         closeModal()
     }, [])
 
+    const showAlert = useCallback(async () => {
+        try {
+            setLoadingAdd(false)
+            closeModal()
+            setAlertVisible(true)
+        } catch (e) {
+
+        }
+    }, [] )
+
+    const transitionToPatient = useCallback( () => {
+        // navigation.navigate(SCREEN_PATIENT, {id})
+    }, [])
+
     return (
         <View style={tw`bg-white h-full`}>
             <Text>UserListScreen2</Text>
@@ -115,7 +133,7 @@ export default () => {
                         </Text>
                     </View>
                     <Text>{about}</Text>
-                    <Button onPress={addPatient(id)} loading={true} title="добавить"/>
+                    <Button onPress={addPatient(id)} title="добавить"/>
                 </View>
             ))}
             <Modal
@@ -140,7 +158,29 @@ export default () => {
                                 value={newPatientState}
                                 onChange={setPatientState}
                             />
-                            <Button style={styles.button} title="Добавить" onPress={add}/>
+                            <Button style={styles.button} title="Добавить" onPress={add} loading={loadingAdd}/>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={alertVisible}
+              onRequestClose={() => {
+                  setModalVisible(!alertVisible)
+              }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Button title="x" onPress={closeModal} style={styles.buttonClose}/>
+                        <Pressable
+                          style={styles.buttonClose}
+                          onPress={() => setModalVisible(!alertVisible)}
+                        >
+                            <Text style={styles.textStyle}>Пациент добавлен</Text>
+                            <Button style={styles.button} title="Перейти на страницу пациента" onPress={transitionToPatient}/>
                         </Pressable>
                     </View>
                 </View>
