@@ -56,49 +56,49 @@ const PublicRoutes = [
 ]
 
 const Routes = [
-    {
-        name: SCREEN_PATIENT,
-        component: PatientScreen,
-    },
-    {
-        name: SCREEN_HOME,
-        component: HomeScreen,
-        options: {
-            headerShown: false
-        }
-    },
-    {
-        name: SCREEN_DOCTORS,
-        component: DoctorScreen,
-    },
-    {
-        name: SCREEN_EVENT,
-        component: EventScreen,
-    },
-    {
-        name: SCREEN_PATIENTS_LIST,
-        component: PatientList,
-    },
-    {
-        name: SCREEN_TASK_LIST,
-        component: TasksScreen,
-    },
-    {
-        name: SCREEN_CHAT,
-        component: ChatScreen,
-    },
-    {
-        name: SCREEN_STATISTIC,
-        component: StatisticScreen,
-    },
-    {
-        name: SCREEN_MY_PROFILE,
-        component: MyProfileScreen,
-    },
-    {
-        name: SCREEN_DIALOG,
-        component: DialogScreen,
-    },
+    // {
+    //     name: SCREEN_PATIENT,
+    //     component: PatientScreen,
+    // },
+    // {
+    //     name: SCREEN_HOME,
+    //     component: HomeScreen,
+    //     options: {
+    //         headerShown: false
+    //     }
+    // },
+    // {
+    //     name: SCREEN_DOCTORS,
+    //     component: DoctorScreen,
+    // },
+    // {
+    //     name: SCREEN_EVENT,
+    //     component: EventScreen,
+    // },
+    // {
+    //     name: SCREEN_PATIENTS_LIST,
+    //     component: PatientList,
+    // },
+    // {
+    //     name: SCREEN_TASK_LIST,
+    //     component: TasksScreen,
+    // },
+    // {
+    //     name: SCREEN_CHAT,
+    //     component: ChatScreen,
+    // },
+    // {
+    //     name: SCREEN_STATISTIC,
+    //     component: StatisticScreen,
+    // },
+    // {
+    //     name: SCREEN_MY_PROFILE,
+    //     component: MyProfileScreen,
+    // },
+    // {
+    //     name: SCREEN_DIALOG,
+    //     component: DialogScreen,
+    // },
     {
         name: SCREEN_USERS,
         component: UserListScreen,
@@ -139,28 +139,48 @@ export default () => {
 
 
 
+    // return (
+    //     <SafeAreaView style={tw`bg-white h-full`}>
+    //         <SocketController>
+    //             <React.Suspense fallback={<Text>loading</Text>}>
+    //                 {!loading
+    //                     ? (
+    //                         <Stack.Navigator screenOptions={globalScreenOptions}>
+    //                             {/*{(userData.id ? Routes : PublicRoutes).map(({name, component, options}) => (*/}
+    //                             {/*    <Stack.Screen*/}
+    //                             {/*        key={name}*/}
+    //                             {/*        name={name}*/}
+    //                             {/*        component={component}*/}
+    //                             {/*        options={options}*/}
+    //                             {/*    />*/}
+    //                             {/*))}*/}
+    //
+    //                         </Stack.Navigator>
+    //                     )
+    //                     : <Text>loading</Text>
+    //                 }
+    //             </React.Suspense>
+    //             {userData.id && <Navigation/>}
+    //         </SocketController>
+    //     </SafeAreaView>
+    // )
     return (
-        <SafeAreaView style={tw`bg-white h-full`}>
-            <SocketController>
-                <React.Suspense fallback={<Text>loading</Text>}>
-                    {!loading
-                        ? (
-                            <Stack.Navigator screenOptions={globalScreenOptions}>
-                                {(userData.id ? Routes : PublicRoutes).map(({name, component, options}) => (
-                                    <Stack.Screen
-                                        key={name}
-                                        name={name}
-                                        component={component}
-                                        options={options}
-                                    />
-                                ))}
-                            </Stack.Navigator>
-                        )
-                        : <Text>loading</Text>
-                    }
-                </React.Suspense>
-                {userData.id && <Navigation/>}
-            </SocketController>
-        </SafeAreaView>
+      <SafeAreaView style={tw`bg-white h-full`}>
+          <SocketController>
+              <React.Suspense fallback={<Text>loading</Text>}>
+                      <Stack.Navigator screenOptions={globalScreenOptions}>
+                          {Routes.map(({name, component, options}) => (
+                            <Stack.Screen
+                              key={name}
+                              name={name}
+                              component={component}
+                              options={options}
+                            />
+                          ))}
+                      </Stack.Navigator>
+              </React.Suspense>
+              {userData.id && <Navigation/>}
+          </SocketController>
+      </SafeAreaView>
     )
 }

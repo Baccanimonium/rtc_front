@@ -19,6 +19,30 @@ const fields = [
     }
 ]
 
+const user2 = [
+    {
+        id: 1,
+        about: "aaa",
+        name: "aaa",
+    },
+    {
+        id: 2,
+        about: "aaa",
+        name: "aaa",
+    },
+    {
+        id: 3,
+        about: "aaa",
+        name: "aaa",
+    },
+    {
+        id: 4,
+        about: "aaa",
+        name: "aaa",
+    },
+]
+
+
 export default () => {
     const [users, setUsers] = useState([])
     const [modalVisible, setModalVisible] = useState(false);
@@ -80,7 +104,7 @@ export default () => {
     return (
         <View style={tw`bg-white h-full`}>
             <Text>UserListScreen2</Text>
-            {users.map(({id, login, address, name, password, about, phone}) => (
+            {user2.map(({id, login, address, name, password, about, phone}) => (
                 <View
                     key={id}
                     style={tw`mb-4 bg-gray-100 p-2 rounded-xl`}
@@ -91,7 +115,7 @@ export default () => {
                         </Text>
                     </View>
                     <Text>{about}</Text>
-                    <Button onPress={addPatient(id)} title="добавить"/>
+                    <Button onPress={addPatient(id)} loading={true} title="добавить"/>
                 </View>
             ))}
             <Modal
