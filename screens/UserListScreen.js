@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState} from "react";
-import {StyleSheet, Text, View, Modal, Pressable, Alert} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import tw from 'tailwind-react-native-classnames'
 import {URL_PATIENT, URL_USERS} from "../constants/ApiUrl";
 import {useRecoilValue} from "recoil";
@@ -8,7 +8,8 @@ import {useEffect} from "react"
 import Form from "../components/Form";
 import {Input, Button} from "react-native-elements";
 import {useNavigation} from "@react-navigation/native";
-import {SCREEN_EVENT, SCREEN_PATIENT} from "../constants/ScreensNames";
+import {SCREEN_PATIENT} from "../constants/ScreensNames";
+import ModalWindow  from "../components/ModalWindow"
 
 const fields = [
     {
@@ -42,13 +43,25 @@ const user2 = [
     },
 ]
 
+const dialogAdd = {
+    title: "Добавление пациента",
+    submitLabel: "Добавить"
+}
+
+const dialogAlert = {
+    title: "Пациент добавлен",
+    submitLabel: "Перейти на страницу пациента"
+}
+
 
 export default () => {
+    // todo вернуть загрузку данных
     const [users, setUsers] = useState([])
     const [modalVisible, setModalVisible] = useState(false);
     const [newPatientState, setPatientState] = useState({})
     const [loadingAdd, setLoadingAdd] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
+    const [disabledClose, setDisabledClose] = useState(false)
     const navigation = useNavigation()
 
     const fetch = useRecoilValue(api)
@@ -65,7 +78,6 @@ export default () => {
             } catch (e) {
                 console.log(e)
             }
-
         })()
     }, [])
 
@@ -78,15 +90,15 @@ export default () => {
         setModalVisible(false)
     }, [])
 
+    const closeAlert = useCallback(() => {
+        setAlertVisible(false)
+    }, [])
+
     const add = useCallback(async () => {
         try {
-
-            // await new Promise(resolve => {
-            //   setTimeout(resolve, 3000)
-            //   console.log(8888)
-            //   // setModalVisible(false)
-            // })
             setLoadingAdd(true)
+            // todo доработать таймер или убрать, вызывая функцию после ответа от бэка
+            setDisabledClose(true)
             setTimeout(showAlert, 3000)
 
             // todo сделать прелоадеры
@@ -96,9 +108,6 @@ export default () => {
             })
             // получаем айди для перехода на страницу пациента
             const {id} = await data.json()
-
-
-            navigation.navigate(SCREEN_PATIENT, {id})
         } catch (e) {
             console.log(e)
         }
@@ -108,6 +117,7 @@ export default () => {
     const showAlert = useCallback(async () => {
         try {
             setLoadingAdd(false)
+            setDisabledClose(false)
             closeModal()
             setAlertVisible(true)
         } catch (e) {
@@ -116,6 +126,7 @@ export default () => {
     }, [] )
 
     const transitionToPatient = useCallback( () => {
+        // todo проверить переход на страницу пациента
         // navigation.navigate(SCREEN_PATIENT, {id})
     }, [])
 
@@ -136,55 +147,27 @@ export default () => {
                     <Button onPress={addPatient(id)} title="добавить"/>
                 </View>
             ))}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible)
-                }}
+            <ModalWindow
+              dialogueParams={dialogAdd}
+              modalVisible={modalVisible}
+              onClose={closeModal}
+              onSubmit={add}
+              loading={loadingAdd}
+              disabledClose={disabledClose}
             >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Button title="x" onPress={closeModal} style={styles.buttonClose}/>
-                        <Pressable
-                            style={styles.buttonClose}
-                            onPress={() => setModalVisible(!modalVisible)}
-                        >
-                            <Text style={styles.textStyle}>Добавление пациента</Text>
-                            <Form
-                                style={styles.form}
-                                fields={fields}
-                                value={newPatientState}
-                                onChange={setPatientState}
-                            />
-                            <Button style={styles.button} title="Добавить" onPress={add} loading={loadingAdd}/>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
-
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={alertVisible}
-              onRequestClose={() => {
-                  setModalVisible(!alertVisible)
-              }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Button title="x" onPress={closeModal} style={styles.buttonClose}/>
-                        <Pressable
-                          style={styles.buttonClose}
-                          onPress={() => setModalVisible(!alertVisible)}
-                        >
-                            <Text style={styles.textStyle}>Пациент добавлен</Text>
-                            <Button style={styles.button} title="Перейти на страницу пациента" onPress={transitionToPatient}/>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
+                <Form
+                  style={styles.form}
+                  fields={fields}
+                  value={newPatientState}
+                  onChange={setPatientState}
+                />
+            </ModalWindow>
+            <ModalWindow
+              dialogueParams={dialogAlert}
+              modalVisible={alertVisible}
+              onClose={closeAlert}
+              onSubmit={transitionToPatient}
+            />
         </View>
     )
 }
@@ -196,29 +179,6 @@ export default () => {
 // при нажатии на кнопку переход на страницу пациента
 
 const styles = StyleSheet.create({
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalView: {
-        margin: 10,
-        backgroundColor: "white",
-        borderRadius: 5,
-        padding: 10,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
-    },
-    textStyle: {
-        textAlign: "center"
-    },
     button: {
         padding: 10,
         elevation: 2
@@ -226,8 +186,4 @@ const styles = StyleSheet.create({
     form: {
         width: 300
     },
-    buttonClose: {
-        backgroundColor: "transparent",
-        marginLeft: "auto"
-    }
 })
