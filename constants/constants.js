@@ -1,0 +1,1 @@
+export const PRESENT_DATE_FORMAT = "DD.MM.YYYY"

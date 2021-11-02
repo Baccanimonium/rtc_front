@@ -8,7 +8,7 @@ import Routes from "./Routes";
 import {StatusBar} from "expo-status-bar";
 import UserProfileLoaderContainer from "./core/UserUploaderContext";
 import {Text} from "react-native";
-import UserListScreen from "./screens/UserListScreen";
+import PatientScreen from "./screens/PatientScreen";
 
 // TODO Сделать логин по HWID
 // import {getUniqueId} from 'react-native-device-info';
@@ -27,8 +27,8 @@ export default function App() {
                 <SafeAreaProvider>
                     <React.Suspense fallback={<Text>loading</Text>}>
                         <UserProfileLoaderContainer>
-                          {/*<Routes/>*/}
-                            <UserListScreen/>
+                          <Routes/>
+                          {/*  <PatientScreen/>*/}
                         </UserProfileLoaderContainer>
                     </React.Suspense>
                 </SafeAreaProvider>

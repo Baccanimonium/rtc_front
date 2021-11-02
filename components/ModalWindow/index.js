@@ -1,15 +1,16 @@
 import {Modal, Pressable, StyleSheet, Text, View} from "react-native";
 import {Button} from "react-native-elements";
 import React from "react";
+import PropTypes from "prop-types"
 
-export default ({
+export const ModalWindow = ({
                   dialogueParams: {title, submitLabel},
-    children, loading, onSubmit, onClose, modalVisible, disabledClose
+    children, loading, onSubmit, onClose, modalVisible, disabledClose, transparent
 }) => {
   return (
     <Modal
       animationType="slide"
-      transparent={true}
+      transparent={transparent}
       visible={modalVisible}
       onRequestClose={() =>
         !modalVisible
@@ -31,6 +32,25 @@ export default ({
     </Modal>
   )
 }
+
+ModalWindow.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  dialogueParams: PropTypes.object,
+  onCancel: PropTypes.func,
+  onSubmit: PropTypes.func,
+  offsetTop: PropTypes.string,
+  width: PropTypes.string,
+  loading: PropTypes.bool,
+  transparent: PropTypes.bool,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+}
+ModalWindow.defaultProps = {
+  dialogueParams: {},
+  width: "440px",
+  transparent: true
+}
+
+export default ModalWindow
 
 const styles = StyleSheet.create({
   centeredView: {
